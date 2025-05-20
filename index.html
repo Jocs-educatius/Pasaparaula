@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<title>Pasapalabra en Català</title>
+<style>
+  /* Reset y base */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body, html {
+    height: 100%;
+    font-family: 'Orbitron', sans-serif; /* Tipografia futurista */
+    background: white;
+    transition: background 1s ease;
+    text-align: center;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+  /* Menú Overlay futurista */
+  #menuOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #00ffe7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 1s ease;
+  }
+  #menuContent {
+    background: rgba(0,0,0,0.8);
+    border-radius: 15px;
+    max-width: 600px;
+    padding: 30px 40px;
+    box-shadow: 0 0 30px #00ffe7;
+    position: relative;
+    text-align: center;
+  }
+  #closeBtn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #00ffe7;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  #closeBtn:hover {
+    color: #00a89a;
+  }
+  #menuContent h2 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px #00ffe7;
+  }
+  #menuContent p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #a0fff6;
+    margin-bottom: 25px;
+  }
+  #startButton {
+    background: #00ffe7;
+    color: #001f23;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 45px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00ffe7;
+    transition: all 0.4s ease;
+    user-select: none;
+  }
+  #startButton:disabled {
+    background: #004144;
+    color: #007c75;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  #startButton:not(:disabled):hover {
+    background: #00d9c1;
+    box-shadow: 0 0 30px #00d9c1;
+  }
+
+  /* Estil del joc original */
+  body.menu-tancat {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    padding: 20px;
+    text-align: center;
+  }
+  #rosco {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .lletra {
+    width: 36px;
+    height: 36px;
+    margin: 4px;
+    line-height: 36px;
+    border-radius: 50%;
+    background-color: lightgray;
+    font-weight: bold;
+    display: inline-block;
+  }
+  .encertat {
+    background-color: #4CAF50;
+    color: white;
+  }
+  .fallat {
+    background-color: #f44336;
+    color: white;
+  }
+  .activa {
+    border: 3px solid #2196F3;
+    background-color: #bbdefb;
+  }
+  #temps {
+    font-size: 20px;
+    margin: 10px;
+  }
+  input[type="text"] {
+    padding: 10px;
+    font-size: 18px;
+    width: 60%;
+    margin-bottom: 10px;
+  }
+  button.joc-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<!-- Menú inicial -->
+<div id="menuOverlay">
+  <div id="menuContent" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+    <button id="closeBtn" aria-label="Tancar menú">×</button>
+    <h2 id="menuTitle">Com es juga a Pasapalabra</h2>
+    <p>
+      Benvingut al Pasapalabra en català! El joc consisteix a respondre preguntes relacionades amb cada lletra de l'abecedari.
+      Has d'encertar la paraula correcta abans que s'esgoti el temps. Pots passar a la següent lletra si no saps la resposta i tornar-hi després.
+      Prepara't per un repte de vocabulari i diversió!
+    </p>
+    <button id="startButton" disabled>Començar a jugar (10)</button>
+  </div>
+</div>
+
+<!-- Contingut joc -->
+<h1>Pasapalabra en Català</h1>
+<div id="rosco"></div>
+<div id="temps">Temps restant: <span id="countdown">180</span> s</div>
+<p id="definicio"></p>
+<input type="text" id="resposta" placeholder="Escriu la paraula" />
+<br>
+<button class="joc-btn" onclick="comprovar()">Enviar</button>
+<button class="joc-btn" onclick="passar()">Pasapalabra</button>
+
+<script>
+  // Variables menú
+  const menuOverlay = document.getElementById('menuOverlay');
+  const closeBtn = document.getElementById('closeBtn');
+  const startButton = document.getElementById('startButton');
+
+  // Temporitzador 10 segons per habilitar botó començar
+  let countdownMenu = 10;
+  const intervalMenu = setInterval(() => {
+    countdownMenu--;
+    startButton.textContent = `Començar a jugar (${countdownMenu})`;
+    if (countdownMenu <= 0) {
+      clearInterval(intervalMenu);
+      startButton.textContent = 'Començar a jugar';
+      startButton.disabled = false;
+    }
+  }, 1000);
+
+  // Funció per tancar menú amb fade out i deixar fons blanc
+  function tancarMenu() {
+    menuOverlay.style.opacity = '0';
+    setTimeout(() => {
+      menuOverlay.style.display = 'none';
+      document.body.style.background = 'white';
+      // Quan el menú es tanca, activem estil joc normal i focus al camp resposta
+      document.body.classList.add('menu-tancat');
+      resposta.focus();
+    }, 1000);
+  }
+
+  closeBtn.addEventListener('click', tancarMenu);
+  startButton.addEventListener('click', () => {
+    tancarMenu();
+    // Iniciem el joc (ja s'inicia per defecte, però aquí pots posar més codi)
+  });
+
+  // ------------------------
+  // Codi joc Pasapalabra
+  const preguntes = [
+    { lletra: "A", definicio: "Animal que fa mel.", resposta: "abella", estat: "pendent" },
+    { lletra: "B", definicio: "Color del cel clar.", resposta: "blau", estat: "pendent" },
+    { lletra: "C", definicio: "Aparell per fer fotos.", resposta: "càmera", estat: "pendent" },
+    { lletra: "D", definicio: "Unitat de longitud del sistema mètric.", resposta: "decímetre", estat: "pendent" },
+    { lletra: "E", definicio: "Estació de l'any amb flors.", resposta: "estiu", estat: "pendent" },
+    { lletra: "F", definicio: "El que emetem quan parlem.", resposta: "veu", estat: "pendent" },
+    { lletra: "G", definicio: "Animal que fa formatge amb la seva llet.", resposta: "cabra", estat: "pendent" },
+    { lletra: "H", definicio: "Lletra muda en català.", resposta: "h", estat: "pendent" },
+    { lletra: "I", definicio: "Contrari de intel·ligent no és, però és vocal!", resposta: "i", estat: "pendent" },
+    { lletra: "J", definicio: "Dia després de dimecres.", resposta: "dijous", estat: "pendent" },
+    { lletra: "K", definicio: "Lletra estrangera que trobem en el teclat.", resposta: "k", estat: "pendent" },
+    { lletra: "L", definicio: "Líquid essencial per a la vida.", resposta: "líquid", estat: "pendent" },
+    { lletra: "M", definicio: "Planeta on vivim.", resposta: "terra", estat: "pendent" },
+    { lletra: "N", definicio: "Contrari de sí.", resposta: "no", estat: "pendent" },
+    { lletra: "O", definicio: "Figura rodona i vocal tancada.", resposta: "o", estat: "pendent" },
+    { lletra: "P", definicio: "Instrument d'escriptura amb tinta.", resposta: "ploma", estat: "pendent" },
+    { lletra: "Q", definicio: "Lletra que acompanya sovint a la 'u'.", resposta: "q", estat: "pendent" },
+    { lletra: "R", definicio: "Part del cos que bombeja la sang.", resposta: "cor", estat: "pendent" },
+    { lletra: "S", definicio: "Substància blanca que endolceix.", resposta: "sucre", estat: "pendent" },
+    { lletra: "T", definicio: "Recipient on es beu te.", resposta: "tassa", estat: "pendent" },
+    { lletra: "U", definicio: "Vocal oberta i rodona.", resposta: "u", estat: "pendent" },
+    { lletra: "V", definicio: "Contrari de mentida.", resposta: "veritat", estat: "pendent" },
+    { lletra: "W", definicio: "Lletra que només surt en paraules estrangeres com 'web'.", resposta: "w", estat: "pendent" },
+    { lletra: "X", definicio: "Lletra que sona com 'cs' a 'extra'.", resposta: "x", estat: "pendent" },
+    { lletra: "Y", definicio: "Lletra que trobem en paraules com 'yogurt'.", resposta: "y", estat: "pendent" },
+    { lletra: "Z", definicio: "Animal blanc i negre amb ratlles.", resposta: "zebra", estat: "pendent" }
+  ];
+
+  let index = 0;
+  let temps = 180;
+  const definicio = document.getElementById("definicio");
+  const resposta = document.getElementById("resposta");
+  const countdown = document.getElementById("countdown");
+  const rosco = document.getElementById("rosco");
+
+  function mostrarRosco() {
+    rosco.innerHTML = "";
+    preguntes.forEach(p => {
+      const span = document.createElement("span");
+      span.className = "lletra";
+      span.id = `lletra-${p.lletra}`;
+      span.innerText = p.lletra;
+      if (p.estat === "encertat") span.classList.add("encertat");
+      if (p.estat === "fallat") span.classList.add("fallat");
+      rosco.appendChild(span);
+    });
+  }
+
+  function mostrarPregunta() {
+    // Eliminar la classe activa anterior
+    document.querySelectorAll(".lletra").forEach(el => el.classList.remove("activa"));
+
+    // Trobar la següent lletra pendent
+    while (preguntes[index].estat !== "pendent") {
+      index = (index + 1) % preguntes.length;
+    }
+
+    // Afegir classe activa
+    const lletraActual = document.getElementById(`lletra-${preguntes[index].lletra}`);
+    if (lletraActual) {
+      lletraActual.classList.add("activa");
+    }
+
+    definicio.innerText = preguntes[index].definicio;
+    resposta.value = "";
+    resposta.focus();
+  }
+
+  function comprovar() {
+    const r = resposta.value.trim().toLowerCase();
+    if (r === preguntes[index].resposta.toLowerCase()) {
+      preguntes[index].estat = "encertat";
+    } else {
+      preguntes[index].estat = "fallat";
+    }
+    mostrarRosco();
+    if (preguntes.some(p => p.estat === "pendent")) {
+      passar();
+    } else {
+      acabarJoc("Has completat el rosco!");
+    }
+  }
+
+  function passar() {
+    do {
+      index = (index + 1) % preguntes.length;
+    } while (preguntes[index].estat !== "pendent");
+    mostrarPregunta();
+  }
+
+  function acabarJoc(missatge) {
+    definicio.innerText = missatge;
+    resposta.disabled = true;
+    clearInterval(contador);
+  }
+
+  // Temporitzador joc (comença quan el menú es tanca)
+  let contador;
+  function iniciarContador() {
+    contador = setInterval(() => {
+      temps--;
+      countdown.innerText = temps;
+      if (temps <= 0) {
+        acabarJoc("Temps esgotat!");
+      }
+    }, 1000);
+  }
+
+  // Inicialització del joc: només quan el menú es tanca
+  mostrarRosco();
+
+  // Quan es tanca el menú, mostrar pregunta i començar comptador
+  function iniciarJoc() {
+    mostrarPregunta();
+    iniciarContador();
+  }
+
+  // Vincular iniciarJoc a tancar menú
+  startButton.addEventListener('click', () => {
+    tancarMenu();
+    iniciarJoc();
+  });
+  closeBtn.addEventListener('click', () => {
+    tancarMenu();
+    iniciarJoc();
+  });
+
+</script>
+
+</body>
+</html>
