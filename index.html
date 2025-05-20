@@ -2,9 +2,9 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8">
-<title>Pasapalabra en Català</title>
+<title>Pasaparaula en Català</title>
 <style>
-  /* Reset y base */
+  /* Reset i base */
   * {
     margin: 0;
     padding: 0;
@@ -152,9 +152,9 @@
 <div id="menuOverlay">
   <div id="menuContent" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
     <button id="closeBtn" aria-label="Tancar menú">×</button>
-    <h2 id="menuTitle">Com es juga a Pasapalabra</h2>
+    <h2 id="menuTitle">Com es juga a Pasaparaula</h2>
     <p>
-      Benvingut al Pasapalabra en català! El joc consisteix a respondre preguntes relacionades amb cada lletra de l'abecedari.
+      Benvingut al Pasaparaula en català! El joc consisteix a respondre preguntes relacionades amb cada lletra de l'abecedari.
       Has d'encertar la paraula correcta abans que s'esgoti el temps. Pots passar a la següent lletra si no saps la resposta i tornar-hi després.
       Prepara't per un repte de vocabulari i diversió!
     </p>
@@ -163,22 +163,22 @@
 </div>
 
 <!-- Contingut joc -->
-<h1>Pasapalabra en Català</h1>
+<h1>Pasaparaula en Català</h1>
 <div id="rosco"></div>
 <div id="temps">Temps restant: <span id="countdown">180</span> s</div>
 <p id="definicio"></p>
 <input type="text" id="resposta" placeholder="Escriu la paraula" />
 <br>
 <button class="joc-btn" onclick="comprovar()">Enviar</button>
-<button class="joc-btn" onclick="passar()">Pasapalabra</button>
+<button class="joc-btn" onclick="passar()">Pasaparaula</button>
 
 <script>
-  // Variables menú
+  // Variables del menú
   const menuOverlay = document.getElementById('menuOverlay');
   const closeBtn = document.getElementById('closeBtn');
   const startButton = document.getElementById('startButton');
 
-  // Temporitzador 10 segons per habilitar botó començar
+  // Temporitzador de 10 segons per habilitar el botó de començar
   let countdownMenu = 10;
   const intervalMenu = setInterval(() => {
     countdownMenu--;
@@ -190,13 +190,13 @@
     }
   }, 1000);
 
-  // Funció per tancar menú amb fade out i deixar fons blanc
+  // Funció per tancar el menú amb un fade out i deixar el fons blanc
   function tancarMenu() {
     menuOverlay.style.opacity = '0';
     setTimeout(() => {
       menuOverlay.style.display = 'none';
       document.body.style.background = 'white';
-      // Quan el menú es tanca, activem estil joc normal i focus al camp resposta
+      // Quan el menú es tanca, activem l'estil del joc normal i posem focus al camp de resposta
       document.body.classList.add('menu-tancat');
       resposta.focus();
     }, 1000);
@@ -205,11 +205,11 @@
   closeBtn.addEventListener('click', tancarMenu);
   startButton.addEventListener('click', () => {
     tancarMenu();
-    // Iniciem el joc (ja s'inicia per defecte, però aquí pots posar més codi)
+    // Aquí es pot afegir codi per iniciar el joc si cal
   });
 
   // ------------------------
-  // Codi joc Pasapalabra
+  // Codi del joc Pasaparaula
   const preguntes = [
     { lletra: "A", definicio: "Animal que fa mel.", resposta: "abella", estat: "pendent" },
     { lletra: "B", definicio: "Color del cel clar.", resposta: "blau", estat: "pendent" },
@@ -307,7 +307,7 @@
     clearInterval(contador);
   }
 
-  // Temporitzador joc (comença quan el menú es tanca)
+  // Temporitzador del joc (comença quan es tanca el menú)
   let contador;
   function iniciarContador() {
     contador = setInterval(() => {
@@ -319,10 +319,10 @@
     }, 1000);
   }
 
-  // Inicialització del joc: només quan el menú es tanca
+  // Inicialització del joc: només quan es tanca el menú
   mostrarRosco();
 
-  // Quan es tanca el menú, mostrar pregunta i començar comptador
+  // Quan es tanca el menú, mostrar la pregunta i començar el comptador
   function iniciarJoc() {
     mostrarPregunta();
     iniciarContador();
@@ -342,3 +342,4 @@
 
 </body>
 </html>
+
