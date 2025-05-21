@@ -154,8 +154,13 @@
     <button id="closeBtn" aria-label="Tancar menú">×</button>
     <h2 id="menuTitle">Com es juga a Pasaparaula</h2>
     <p>
-      Benvingut al Pasaparaula en català! El joc consisteix a respondre preguntes relacionades amb cada lletra de l'abecedari.
-      Has d'encertar la paraula correcta abans que s'esgoti el temps. Pots passar a la següent lletra si no saps la resposta i tornar-hi després.
+      Benvingut al Pasaparaula en català! El joc consisteix a respondre preguntes relacionades amb cada lletra de l'abecedari.<br><br>
+      <strong>Com funciona:</strong><br>
+      - Cada pregunta està associada a una lletra<br>
+      - La paraula correcta pot <strong>començar amb aquesta lletra</strong> o <strong>contenir-la</strong><br>
+      - Has d'encertar la paraula correcta abans que s'esgoti el temps<br>
+      - Pots passar a la següent lletra si no saps la resposta i tornar-hi després<br><br>
+      Exemple: Per la lletra "M", tant "mart" (comença per M) com "llimona" (conté M) serien respostes vàlides.<br><br>
       Prepara't per un repte de vocabulari i diversió!
     </p>
     <button id="startButton" disabled>Començar a jugar (10)</button>
@@ -209,7 +214,7 @@
     { lletra: "C", definicio: "Aparell que captura imatges i moments.", resposta: "càmera", estat: "pendent" },
     { lletra: "D", definicio: "Dècima part d'un metre.", resposta: "decímetre", estat: "pendent" },
     { lletra: "E", definicio: "Estació de l'any entre primavera i tardor.", resposta: "estiu", estat: "pendent" },
-    { lletra: "F", definicio: "Electrodomèstic que s’utilitza per fregir aliments.", resposta: "fregidora", estat: "pendent" },
+    { lletra: "F", definicio: "Electrodomèstic que s'utilitza per fregir aliments.", resposta: "fregidora", estat: "pendent" },
     { lletra: "G", definicio: "Animal domèstic que fa mèu.", resposta: "gat", estat: "pendent" },
     { lletra: "H", definicio: "Lletra que no es pronuncia en paraules com 'home'.", resposta: "h", estat: "pendent" },
     { lletra: "I", definicio: "Vocal que també és un pronom personal.", resposta: "i", estat: "pendent" },
@@ -226,7 +231,7 @@
     { lletra: "T", definicio: "Recipient amb nansa per a beure líquids.", resposta: "tassa", estat: "pendent" },
     { lletra: "U", definicio: "Vocal que representa la unitat en matemàtiques.", resposta: "u", estat: "pendent" },
     { lletra: "V", definicio: "Allò que es correspon amb els fets reals.", resposta: "veritat", estat: "pendent" },
-    { lletra: "W", definicio: "Paraula anglesa que s’utilitza per descriure el lloc web d’una persona o entitat.", resposta: "web", estat: "pendent" },
+    { lletra: "W", definicio: "Paraula anglesa que s'utilitza per descriure el lloc web d'una persona o entitat.", resposta: "web", estat: "pendent" },
     { lletra: "X", definicio: "Lletra que representa el valor desconegut en matemàtiques.", resposta: "x", estat: "pendent" },
     { lletra: "Y", definicio: "Lletra que en català es pronuncia com 'i grega'.", resposta: "y", estat: "pendent" },
     { lletra: "Z", definicio: "Animal africà amb pelatge ratllat.", resposta: "zebra", estat: "pendent" }
@@ -274,7 +279,12 @@
 
   function comprovar() {
     const r = resposta.value.trim().toLowerCase();
-    if (r === preguntes[index].resposta.toLowerCase()) {
+    const respostaCorrecta = preguntes[index].resposta.toLowerCase();
+    
+    // Comprovar si la resposta comença per la lletra o la conté
+    if (r === respostaCorrecta || 
+        r.startsWith(preguntes[index].lletra.toLowerCase()) || 
+        r.includes(preguntes[index].lletra.toLowerCase())) {
       preguntes[index].estat = "encertat";
     } else {
       preguntes[index].estat = "fallat";
