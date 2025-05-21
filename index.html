@@ -12,7 +12,7 @@
   }
   body, html {
     height: 100%;
-    font-family: 'Orbitron', sans-serif; /* Tipografia futurista */
+    font-family: 'Orbitron', sans-serif;
     background: white;
     transition: background 1s ease;
     text-align: center;
@@ -196,29 +196,21 @@
     setTimeout(() => {
       menuOverlay.style.display = 'none';
       document.body.style.background = 'white';
-      // Quan el menú es tanca, activem l'estil del joc normal i posem focus al camp de resposta
       document.body.classList.add('menu-tancat');
       resposta.focus();
     }, 1000);
   }
 
-  closeBtn.addEventListener('click', tancarMenu);
-  startButton.addEventListener('click', () => {
-    tancarMenu();
-    // Aquí es pot afegir codi per iniciar el joc si cal
-  });
-
   // ------------------------
   // Codi del joc Pasaparaula
   const preguntes = [
- [
     { lletra: "A", definicio: "Insecte volador que fa mel.", resposta: "abella", estat: "pendent" },
     { lletra: "B", definicio: "Color que recorda el mar en un dia assolellat.", resposta: "blau", estat: "pendent" },
     { lletra: "C", definicio: "Aparell que captura imatges i moments.", resposta: "càmera", estat: "pendent" },
     { lletra: "D", definicio: "Dècima part d'un metre.", resposta: "decímetre", estat: "pendent" },
     { lletra: "E", definicio: "Estació de l'any entre primavera i tardor.", resposta: "estiu", estat: "pendent" },
-    { lletra: "F", definicio: "So que produïm quan parlem.", resposta: "veu", estat: "pendent" },
-    { lletra: "G", definicio: "Animal de granja que dona llet per fer formatge.", resposta: "cabra", estat: "pendent" },
+    { lletra: "F", definicio: "Electrodomèstic que s’utilitza per fregir aliments.", resposta: "fregidora", estat: "pendent" },
+    { lletra: "G", definicio: "Animal domèstic que fa mèu.", resposta: "gat", estat: "pendent" },
     { lletra: "H", definicio: "Lletra que no es pronuncia en paraules com 'home'.", resposta: "h", estat: "pendent" },
     { lletra: "I", definicio: "Vocal que també és un pronom personal.", resposta: "i", estat: "pendent" },
     { lletra: "J", definicio: "Quart dia de la setmana laboral.", resposta: "dijous", estat: "pendent" },
@@ -234,12 +226,11 @@
     { lletra: "T", definicio: "Recipient amb nansa per a beure líquids.", resposta: "tassa", estat: "pendent" },
     { lletra: "U", definicio: "Vocal que representa la unitat en matemàtiques.", resposta: "u", estat: "pendent" },
     { lletra: "V", definicio: "Allò que es correspon amb els fets reals.", resposta: "veritat", estat: "pendent" },
-    { lletra: "W", definicio: "Lletra present en mots d'origen anglès.", resposta: "w", estat: "pendent" },
+    { lletra: "W", definicio: "Paraula anglesa que s’utilitza per descriure el lloc web d’una persona o entitat.", resposta: "web", estat: "pendent" },
     { lletra: "X", definicio: "Lletra que representa el valor desconegut en matemàtiques.", resposta: "x", estat: "pendent" },
     { lletra: "Y", definicio: "Lletra que en català es pronuncia com 'i grega'.", resposta: "y", estat: "pendent" },
-    { lletra: "Z", definicio: "Equid africà amb pelatge ratllat.", resposta: "zebra", estat: "pendent" }
-]
-  
+    { lletra: "Z", definicio: "Animal africà amb pelatge ratllat.", resposta: "zebra", estat: "pendent" }
+  ];
 
   let index = 0;
   let temps = 180;
@@ -340,8 +331,14 @@
     iniciarJoc();
   });
 
+  // Permetre enviar resposta amb Enter
+  resposta.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      comprovar();
+    }
+  });
+
 </script>
 
 </body>
 </html>
-
